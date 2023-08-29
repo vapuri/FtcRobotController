@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name="Varun: Test Git", group="Linear Opmode")
+@TeleOp
 
 public class VarunTest extends LinearOpMode {
 
