@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
 
+// Change this code to use OpMode instead
 public class VarunTest extends LinearOpMode {
 
     private DcMotor motorfrontleft;
