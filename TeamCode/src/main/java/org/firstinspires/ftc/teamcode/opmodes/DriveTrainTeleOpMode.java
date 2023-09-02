@@ -19,7 +19,6 @@ public class DriveTrainTeleOpMode extends OpMode {
         double forward = -gamepad1.left_stick_y;
         double right = gamepad1.left_stick_x;
         double rotate = gamepad1.right_stick_x;
-
         driveTrain.drive(forward, right, rotate);
     }
 }

@@ -21,6 +21,14 @@ public class DriveTrain {
         motorRearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
+    public void drive (double forward, double right, double rotate) {
+        double frontLeftPower = forward + right + rotate;
+        double frontRightPower = forward - right - rotate;
+        double rearLeftPower = forward - right + rotate;
+        double rearRightPower = forward + right - rotate;
+        setPowers(frontLeftPower, frontRightPower, rearLeftPower, rearRightPower);
+   }
+
     private void setPowers(double frontLeftPower, double frontRightPower, double rearLeftPower, double rearRightPower) {
         int power_cap = 3;
 
@@ -34,14 +42,9 @@ public class DriveTrain {
         motorRearLeft.setPower(rearLeftPower);
         motorRearRight.setPower  (rearRightPower);
     }
-    public void drive (double forward, double right, double rotate) {
-        double frontLeftPower = forward;
-        double frontRightPower = forward;
-        double rearLeftPower = forward;
-        double rearRightPower = forward;
 
-        setPowers(frontLeftPower, frontRightPower, rearLeftPower, rearRightPower);
-   }
-
+    public void stop() {
+        setPowers(0,0,0,0);
+    }
 
 }
