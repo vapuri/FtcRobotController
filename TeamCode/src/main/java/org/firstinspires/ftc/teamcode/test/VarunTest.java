@@ -45,14 +45,14 @@ public class VarunTest extends LinearOpMode {
                 left_x = gamepad1.left_stick_x / power_cap;
                 right_x = gamepad1.right_stick_x / power_cap;
                 // put code here
-                if (right_x != 0) {
+                if (right_x != 0) { // rotate
                     motorfrontright.setPower(-right_x);
                     motorrearright.setPower(-right_x);
                     motorfrontleft.setPower(right_x);
                     motorrearleft.setPower  (right_x);
                 }
 
-                if (left_x != 0) {
+                if (left_x != 0) { // move left/right
                     motorfrontright.setPower(-left_x);
                     motorrearright.setPower(left_x);
                     motorfrontleft.setPower(left_x);
@@ -60,6 +60,7 @@ public class VarunTest extends LinearOpMode {
                 }
 
 
+                // move forward/backward
                 motorfrontright.setPower(left_y);
                 motorrearright.setPower (left_y);
                 motorfrontleft.setPower (left_y);

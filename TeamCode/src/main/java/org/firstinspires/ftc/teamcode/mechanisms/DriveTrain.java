@@ -9,6 +9,7 @@ public class DriveTrain {
     private DcMotor motorFrontRight;
     private DcMotor motorRearLeft;
     private DcMotor motorRearRight;
+    private int powerCap = 3;
 
     public DriveTrain(HardwareMap hardwareMap) {
         motorFrontLeft = hardwareMap.get(DcMotor.class, "motor-front-left");
@@ -22,6 +23,10 @@ public class DriveTrain {
     }
 
     public void drive (double forward, double right, double rotate) {
+        forward /= powerCap;
+        right /= powerCap;
+        rotate /= powerCap;
+
         double frontLeftPower = forward + right + rotate;
         double frontRightPower = forward - right - rotate;
         double rearLeftPower = forward - right + rotate;
@@ -30,12 +35,17 @@ public class DriveTrain {
    }
 
     private void setPowers(double frontLeftPower, double frontRightPower, double rearLeftPower, double rearRightPower) {
-        int power_cap = 3;
+        double maxSpeed = 1.0;
 
-        frontLeftPower /= power_cap;
-        frontRightPower /= power_cap;
-        rearLeftPower /= power_cap;
-        rearRightPower /= power_cap;
+        maxSpeed = Math.max(maxSpeed, Math.abs(frontLeftPower));
+        maxSpeed = Math.max(maxSpeed, Math.abs(frontRightPower));
+        maxSpeed = Math.max(maxSpeed, Math.abs(rearLeftPower));
+        maxSpeed = Math.max(maxSpeed, Math.abs(rearRightPower));
+
+        frontLeftPower /= maxSpeed;
+        frontRightPower /= maxSpeed;
+        rearLeftPower /= maxSpeed;
+        rearRightPower /= maxSpeed;
 
         motorFrontLeft.setPower(frontLeftPower);
         motorFrontRight.setPower(frontRightPower);
