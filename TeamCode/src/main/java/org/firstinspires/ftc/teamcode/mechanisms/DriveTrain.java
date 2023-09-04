@@ -61,4 +61,8 @@ public class DriveTrain {
         this.powerCap = powerCap;
     }
 
+    public int getPowerCap() {
+        return this.powerCap;
+    }
+
 }
