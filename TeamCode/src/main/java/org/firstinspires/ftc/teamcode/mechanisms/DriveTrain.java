@@ -57,4 +57,8 @@ public class DriveTrain {
         setPowers(0,0,0,0);
     }
 
+    public void setPowerCap(int powerCap) {
+        this.powerCap = powerCap;
+    }
+
 }
