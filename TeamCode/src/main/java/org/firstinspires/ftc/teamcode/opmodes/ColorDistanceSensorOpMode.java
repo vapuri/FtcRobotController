@@ -18,6 +18,7 @@ public class ColorDistanceSensorOpMode extends OpMode {
     public void loop() {
         telemetry.addData("Amount Red", colorDistanceSensor.getAmountRed());
         telemetry.addData("Amount Blue", colorDistanceSensor.getAmountBlue());
+        telemetry.addData("Amount Green", colorDistanceSensor.getAmountGreen());
         telemetry.addData("Distance (CM)", colorDistanceSensor.getDistance(DistanceUnit.CM));
     }
 }
