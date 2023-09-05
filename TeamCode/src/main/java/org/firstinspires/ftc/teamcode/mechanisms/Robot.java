@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Robot {
     DriveTrain drivetrain;
     ColorDistanceSensor colorDistanceSensor;
+    String name = "FTC New Era";
 
     public Robot(HardwareMap hardwareMap) {
         drivetrain = new DriveTrain(hardwareMap);
@@ -16,5 +17,8 @@ public class Robot {
     }
     public ColorDistanceSensor getColorDistanceSensor() {
         return colorDistanceSensor;
+    }
+    public String getName() {
+        return name;
     }
 }

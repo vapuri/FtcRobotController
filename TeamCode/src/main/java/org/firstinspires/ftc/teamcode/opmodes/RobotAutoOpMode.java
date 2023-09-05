@@ -19,7 +19,7 @@ public class RobotAutoOpMode extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.a)
-            robot.getDrivetrain().drive(1, 0, 0);
+            robot.getDrivetrain().drive(0.5, 0, 0);
         if (gamepad1.b)
             robot.getDrivetrain().drive(-1, 0, 0);
         if (gamepad1.x)
@@ -27,7 +27,7 @@ public class RobotAutoOpMode extends OpMode {
 
         double distance = robot.getColorDistanceSensor().getDistance(DistanceUnit.CM);
 
-        if (distance>4 && distance <4.5)
+        if (distance>4 && distance <4.6)
             robot.getDrivetrain().stop();
 
         telemetry.addData("Distance (CM)", distance);
