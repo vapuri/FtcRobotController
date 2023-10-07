@@ -9,7 +9,7 @@ public class Robot {
 
     public Robot(HardwareMap hardwareMap) {
         drivetrain = new DriveTrain(hardwareMap);
-        colorDistanceSensor = new ColorDistanceSensor(hardwareMap);
+        // colorDistanceSensor = new ColorDistanceSensor(hardwareMap);
     }
 
     public DriveTrain getDrivetrain() {
