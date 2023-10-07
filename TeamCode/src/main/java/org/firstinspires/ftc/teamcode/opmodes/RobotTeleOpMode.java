@@ -23,7 +23,7 @@ public class RobotTeleOpMode extends OpMode {
         double rotate = gamepad1.right_stick_x;
         robot.getDrivetrain().drive(forward, right, rotate);
 
-        double distance = robot.getColorDistanceSensor().getDistance(DistanceUnit.CM);
-        telemetry.addData("Distance (CM)", distance);
+        // double distance = robot.getColorDistanceSensor().getDistance(DistanceUnit.CM);
+        // telemetry.addData("Distance (CM)", distance);
     }
 }
