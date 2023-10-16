@@ -16,11 +16,13 @@ public class ArmTeleOpMode extends OpMode {
 
     @Override
     public void loop() {
-        if (gamepad1.b)  // Check if the 'B' button is pressed
+        if (gamepad1.y)  // Check if the 'Y' button is pressed
             arm.rotateUp();
-        else if (gamepad1.y)  // Check if the 'Y' button is pressed
+        else if (gamepad1.b)  // Check if the 'B' button is pressed
             arm.rotateDown();
-        telemetry.addData("Target Position", arm.getCurrentPosition());
+
+        telemetry.addData("Current Position", arm.getCurrentPosition());
+        telemetry.addData("Current Angle", arm.getCurrentAngle());
         telemetry.update();
     }
 }
