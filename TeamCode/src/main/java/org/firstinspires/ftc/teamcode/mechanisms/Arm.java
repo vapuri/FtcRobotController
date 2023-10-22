@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Arm {
@@ -9,7 +10,9 @@ public class Arm {
     private final double  PPR = 1425.1 * gearRatio; //pulse per revolution for motor encoder
 
     public Arm(HardwareMap hardwareMap) {
-        motorArm = hardwareMap.get(DcMotor.class, "motor-rear-right");
+        motorArm = hardwareMap.get(DcMotor.class, "motor-front-left");
+        // Reverse direction of motor since the arm is flipped
+        motorArm.setDirection(DcMotorSimple.Direction.REVERSE);
         // Reset the motor encoder so that it reads zero ticks
         motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
@@ -17,7 +20,8 @@ public class Arm {
     }
 
     public void rotateUp() {
-        int targetPosition = (int) PPR/6; // turn 60 degrees
+        int angle = 80; // turn 80 degrees up
+        int targetPosition = (int) PPR * angle/360; // turn 80 degrees
         motorArm.setTargetPosition(targetPosition);
         motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorArm.setPower(0.3);
