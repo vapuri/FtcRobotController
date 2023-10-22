@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.Robot;
 
 @Autonomous
@@ -25,7 +23,8 @@ public class RobotAutoOpMode extends OpMode {
         if (gamepad1.x)
             robot.getDrivetrain().stop();
 
-        double distance = robot.getColorDistanceSensor().getDistance(DistanceUnit.CM);
+        // double distance = robot.getColorDistanceSensor().getDistance(DistanceUnit.CM);
+        double distance = 4;
 
         if (distance>4 && distance <4.6)
             robot.getDrivetrain().stop();
