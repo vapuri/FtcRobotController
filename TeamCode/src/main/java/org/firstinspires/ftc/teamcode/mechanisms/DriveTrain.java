@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class DriveTrain {
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
-    private DcMotor motorRearLeft;
+    private DcMotorSimple motorRearLeft;
     private DcMotor motorRearRight;
     private int powerCap = 3;
 
     public DriveTrain(HardwareMap hardwareMap) {
         motorFrontLeft = hardwareMap.get(DcMotor.class, "motor-front-left");
         motorFrontRight = hardwareMap.get(DcMotor.class, "motor-front-right");
-        motorRearLeft = hardwareMap.get(DcMotor.class, "motor-rear-left");
+        motorRearLeft = hardwareMap.get(DcMotorSimple.class, "motor-rear-left");
         motorRearRight = hardwareMap.get(DcMotor.class, "motor-rear-right");
 
         // Reverse direction of motors based on the orientation
