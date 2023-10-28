@@ -3,18 +3,30 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Robot {
     DriveTrain drivetrain;
-    String name = "FTC New Era";
+    Arm arm;
+    Claw claw;
+    // Eyes eyes;
 
     public Robot(HardwareMap hardwareMap) {
         drivetrain = new DriveTrain(hardwareMap);
-
+        arm = new Arm(hardwareMap);
+        claw = new Claw(hardwareMap);
+        // eyes = new Eyes(hardwareMap);
     }
 
     public DriveTrain getDrivetrain() {
         return drivetrain;
     }
 
-    public String getName() {
-        return name;
+    public Arm getArm() {
+        return arm;
     }
+
+    public Claw getClaw() {
+        return claw;
+    }
+
+    /* public Eyes getEyes() {
+        return eyes;
+    } */
 }
