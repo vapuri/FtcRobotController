@@ -9,6 +9,12 @@ public class Arm {
     private final double  PPR = 1425.1 * gearRatio; //pulse per revolution for motor encoder
     private ArmStateType armState;
 
+    // preset angles (in degreees)
+    private final int FoldAngle=7;
+    private final int PickAngle=219;
+    private final int DepositAngle=(219-65);
+    //int angle = 154; // 219-65=154 degrees
+
     public enum ArmStateType {
         FOLD,
         PICK,
@@ -31,10 +37,19 @@ public class Arm {
 
     }
 
+    //helper function to translate from angle to position
+    private int ang_to_pos(int angle) {
+        // float version
+        float f_targetPosition = (float) PPR * (float)angle/(float)360;
+        int   i_targetPosition = (int) f_targetPosition;
+        return i_targetPosition;
+    }
+
     public void fold() {
         // Flip the arm to fold-down position
-        int angle = 7; // 7 degrees to the arm does not hit the stopped
-        int targetPosition = (int) PPR * angle/360;
+        //int angle = 7; // 7 degrees to the arm does not hit the stopped
+        //int targetPosition = (int) PPR * angle/360;
+        int targetPosition = ang_to_pos(FoldAngle);
 
         armState = ArmStateType.FOLD;
         motorArm.setTargetPosition(targetPosition);
@@ -43,8 +58,9 @@ public class Arm {
     }
 
     public void deposit() {
-        int angle = 154; // 219-65=154 degrees
-        int targetPosition = (int) PPR * angle/360;
+        //int angle = 154; // 219-65=154 degrees
+        //int targetPosition = (int) PPR * angle/360;
+        int targetPosition = ang_to_pos(DepositAngle);
 
         armState = ArmStateType.DEPOSIT;
         motorArm.setTargetPosition(targetPosition);
@@ -53,8 +69,9 @@ public class Arm {
     }
 
     public void pick() {
-        int angle = 219;
-        int targetPosition = (int) PPR * angle/360;
+        //int angle = 219;
+        //int targetPosition = (int) PPR * angle/360;
+        int targetPosition = ang_to_pos(PickAngle);
 
         if (armState == ArmStateType.DEPOSIT)
             return;
