@@ -22,15 +22,21 @@ public class RobotTeleOpMode extends OpMode {
     public void loop() {
         // robot.getEyes().detectAprilTags(telemetry);
 
+        // map gamepad controls to specific tasks
         double forward = -gamepad1.left_stick_y;
-        double right = gamepad1.left_stick_x;
-        double rotate = gamepad1.right_stick_x;
+        double right   = gamepad1.left_stick_x;
+        double rotate  = gamepad1.right_stick_x;
+
+        // cut power to drive-train if right_trigger is NOT pressed
         if (gamepad1.right_trigger!=0)
             // || robot.getArm().getArmState() == Arm.ArmStateType.PICK
             robot.getDrivetrain().setPowerCap(6);
         else
             robot.getDrivetrain().setPowerCap(2);
+
+        //monitor drive-train controls (i.e., mecanum wheel movement)
         robot.getDrivetrain().drive(forward, right, rotate);
+
 
         if (gamepad1.y)
             robot.getArm().pick();
