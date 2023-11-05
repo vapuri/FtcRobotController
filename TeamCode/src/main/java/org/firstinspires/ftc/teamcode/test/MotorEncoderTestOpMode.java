@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +11,7 @@ public class MotorEncoderTestOpMode extends OpMode {
 
     @Override
     public void init() {
-        motorArm = hardwareMap.get(DcMotor.class, "motor-rear-right");
+        motorArm = hardwareMap.get(DcMotor.class, "motor-arm");
         // Reset the motor encoder so that it reads zero ticks
         motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
@@ -27,13 +28,11 @@ public class MotorEncoderTestOpMode extends OpMode {
         double revolutions = position / PPR;
 
         double angle = revolutions * 360;
-        double angleNormalized = angle % 360;
 
         // Show the position of the motor on telemetry
         telemetry.addData("Encoder Position", position);
         telemetry.addData("Encoder Revolutions", revolutions);
         telemetry.addData("Encoder Angle (Degrees)", angle);
-        telemetry.addData("Encoder Angle - Normalized (Degrees)", angleNormalized);
         telemetry.update();
     }
 }
