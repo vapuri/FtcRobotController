@@ -5,13 +5,19 @@ public class Robot {
     DriveTrain drivetrain;
     Arm arm;
     Claw claw;
-    // Eyes eyes;
+    //Eyes eyes;
+
+    DroneLauncher drone;
+
+    ObjDetection objdet;
 
     public Robot(HardwareMap hardwareMap) {
         drivetrain = new DriveTrain(hardwareMap);
         arm = new Arm(hardwareMap);
         claw = new Claw(hardwareMap);
-        // eyes = new Eyes(hardwareMap);
+        //eyes = new Eyes(hardwareMap);
+        drone = new DroneLauncher(hardwareMap);
+        objdet = new ObjDetection(hardwareMap);
     }
 
     public DriveTrain getDrivetrain() {
@@ -25,6 +31,10 @@ public class Robot {
     public Claw getClaw() {
         return claw;
     }
+
+    public DroneLauncher getDroneLauncher () {return drone;}
+
+    public ObjDetection getObjDetector() {return objdet;}
 
     /* public Eyes getEyes() {
         return eyes;

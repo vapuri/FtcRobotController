@@ -4,14 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //import org.firstinspires.ftc.teamcode.mechanisms.Arm;
+import org.firstinspires.ftc.teamcode.mechanisms.ObjDetection;
 import org.firstinspires.ftc.teamcode.mechanisms.Robot;
 
 
 @TeleOp
 public class RobotTeleOpMode extends OpMode {
     Robot robot;
-    String CompileDate= "11/5/2023";
-    String CompileTime= "02:00pm";
+    String CompileDate= "11/13/2023";
+    String CompileTime= "8:49pm";
 
 
     @Override
@@ -40,12 +41,14 @@ public class RobotTeleOpMode extends OpMode {
         int  FinePwrCap = 6; // fine
         int  MidPwrCap  = (FinePwrCap+DfltPwrCap)/2; // intermediate
 
-        // cut power to drive-train if right_trigger is NOT pressed
+        ObjDetection objdet = robot.getObjDetector();
+
+        // cut power to drive-train if right_trigger is pressed
         if (gamepad1.right_trigger!=0)
             // || robot.getArm().getArmState() == Arm.ArmStateType.PICK
-            robot.getDrivetrain().setPowerCap(6);
+            robot.getDrivetrain().setPowerCap(FinePwrCap);
         else
-            robot.getDrivetrain().setPowerCap(2);
+            robot.getDrivetrain().setPowerCap(DfltPwrCap);
 
         //monitor drive-train controls (i.e., mecanum wheel movement)
         robot.getDrivetrain().drive(forward, right, rotate);
@@ -78,6 +81,28 @@ public class RobotTeleOpMode extends OpMode {
             robot.getDrivetrain().setPowerCap(MidPwrCap);
             robot.getDrivetrain().drive(0/*forward*/, +1/*right*/, 0/*rotate*/);
         }
+
+        /* #---------------------- GAMEPAD2 ----------------------# */
+        // drone preparation (combination keys) - Gamepad2 (X + Y)
+        if (gamepad2.x && gamepad2.y) {
+            telemetry.speak("WARNING! Preparing Drone!");
+            robot.getDroneLauncher().prepare();
+        }
+        // drone launcher (combination keys) - Gamepad2 (A + B)
+        if (gamepad2.a && gamepad2.b) {
+            telemetry.speak("Launching Drone!");
+            robot.getDroneLauncher().launch();
+        }
+
+        if (gamepad2.start) {
+            objdet.telemetryTfod(telemetry);
+        }
+
+        if (gamepad2.back) {
+            telemetry.speak("deleting ObjDet");
+            objdet.delobj();
+        }
+
 
         // update all telemetry
         telemetry.update();
