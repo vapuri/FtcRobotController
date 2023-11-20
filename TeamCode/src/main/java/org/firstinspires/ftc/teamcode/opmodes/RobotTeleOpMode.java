@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import android.os.SystemClock;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,8 +13,10 @@ import org.firstinspires.ftc.teamcode.mechanisms.Robot;
 @TeleOp
 public class RobotTeleOpMode extends OpMode {
     Robot robot;
-    String CompileDate= "11/13/2023";
-    String CompileTime= "8:49pm";
+    String CompileDate= "11/19/2023";
+    String CompileTime= "9:41pm";
+
+    long init_time_mills=0;
 
 
     @Override
@@ -23,10 +27,18 @@ public class RobotTeleOpMode extends OpMode {
         // print compile date & time
         telemetry.addLine("Build: " + CompileDate + " " + CompileTime);
 
-        telemetry.speak("Make sure the arm is in init position");
-        telemetry.addLine("Make sure the arm is in init position");
+        /* CHECK FOR ARM INIT POSITION */
+        // if arm is NOT in correct position ..exit immediately!
+        if (0 == robot.getArm().arm_init_ok())
+            throw new RuntimeException("Robot Arm NOT in init position .. exiting!");
+        else
+            telemetry.addLine("Arm  init position Good!");
+
+        // record current time
+        init_time_mills = SystemClock.uptimeMillis();
     }
 
+    //https://github.com/alan412/LearnJavaForFTC
     @Override
     public void loop() {
         // robot.getEyes().detectAprilTags(telemetry);
@@ -94,15 +106,28 @@ public class RobotTeleOpMode extends OpMode {
             robot.getDroneLauncher().launch();
         }
 
-        if (gamepad2.start) {
-            objdet.telemetryTfod(telemetry);
+        //detect pixel
+        double conf=objdet.telemetryTfod(telemetry);
+
+        if (gamepad2.start)
+            robot.set_pixel_seek(1);
+
+        if (gamepad2.back)
+            robot.set_pixel_seek(0);
+
+        if (robot.pixel_seek()==1 && conf < 80.0) {
+            telemetry.addData("FINE!", "(%.0f %% Conf.)",conf);
+            double u_forward = -gamepad2.left_stick_y;
+            double u_right   = gamepad2.left_stick_x;
+            double u_rotate  = gamepad2.right_stick_x;
+            robot.getDrivetrain().setPowerCap(5);
+            robot.getDrivetrain().drive(u_forward, u_right, u_rotate);
         }
 
-        if (gamepad2.back) {
-            telemetry.speak("deleting ObjDet");
-            objdet.delobj();
-        }
-
+//        if (gamepad2.back) {
+//            telemetry.speak("deleting ObjDet");
+//            objdet.delobj();
+//        }
 
         // update all telemetry
         telemetry.update();

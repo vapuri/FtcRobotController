@@ -11,6 +11,8 @@ public class Robot {
 
     ObjDetection objdet;
 
+    private int pixel_seek=0;
+
     public Robot(HardwareMap hardwareMap) {
         drivetrain = new DriveTrain(hardwareMap);
         arm = new Arm(hardwareMap);
@@ -18,6 +20,8 @@ public class Robot {
         //eyes = new Eyes(hardwareMap);
         drone = new DroneLauncher(hardwareMap);
         objdet = new ObjDetection(hardwareMap);
+
+        pixel_seek=0;
     }
 
     public DriveTrain getDrivetrain() {
@@ -35,6 +39,10 @@ public class Robot {
     public DroneLauncher getDroneLauncher () {return drone;}
 
     public ObjDetection getObjDetector() {return objdet;}
+
+    public int pixel_seek() {return pixel_seek;}
+
+    public void set_pixel_seek(int val) {pixel_seek = (val==0)? 0 : 1;}
 
     /* public Eyes getEyes() {
         return eyes;
