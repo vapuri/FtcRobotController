@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.Robot;
 @TeleOp
 public class RobotTeleOpMode extends OpMode {
     Robot robot;
-    String CompileDate= "11/19/2023";
-    String CompileTime= "9:41pm";
+    String CompileDate= "11/22/2023";
+    String CompileTime= "10:41am";
 
     long init_time_mills=0;
 
@@ -32,7 +32,7 @@ public class RobotTeleOpMode extends OpMode {
         if (0 == robot.getArm().arm_init_ok())
             throw new RuntimeException("Robot Arm NOT in init position .. exiting!");
         else
-            telemetry.addLine("Arm  init position Good!");
+            telemetry.addLine("Arm init position Good!!");
 
         // record current time
         init_time_mills = SystemClock.uptimeMillis();
@@ -49,35 +49,52 @@ public class RobotTeleOpMode extends OpMode {
         double rotate  = gamepad1.right_stick_x;
 
         // set overall power cap here on top!
-        int  DfltPwrCap = 2; // default
-        int  FinePwrCap = 6; // fine
+        final int  DfltPwrCap = 1; // default
+        final int  FinePwrCap = 3; // fine
+        final int  RotPwrCap  = 2; // cap rotation  power
+
         int  MidPwrCap  = (FinePwrCap+DfltPwrCap)/2; // intermediate
+
+        // set all the conditions for power cap
+        boolean PwrCapEn = robot.getArm().is_in_pre_pick_state() ||
+                robot.getArm().is_in_pick_state() ||
+                (gamepad1.right_trigger!=0);
 
         ObjDetection objdet = robot.getObjDetector();
 
         // cut power to drive-train if right_trigger is pressed
-        if (gamepad1.right_trigger!=0)
-            // || robot.getArm().getArmState() == Arm.ArmStateType.PICK
+        if (PwrCapEn)
             robot.getDrivetrain().setPowerCap(FinePwrCap);
         else
             robot.getDrivetrain().setPowerCap(DfltPwrCap);
 
         //monitor drive-train controls (i.e., mecanum wheel movement)
-        robot.getDrivetrain().drive(forward, right, rotate);
+        robot.getDrivetrain().drive(forward, right, rotate/RotPwrCap);
 
         // monitor game-pad inputs for the arm & claw
-        if (gamepad1.y)
-            robot.getArm().pick();
+        if (gamepad1.y) {
+            // allow moving to pick position only if claw is open (i.e. avoid digging into the board with a held pixel)
+            if (robot.getClaw().is_claw_open())
+                robot.getArm().pre_pick();
+            else
+                telemetry.speak("WARNING: Attempting to move to pick position with claw closed..");
+        }
         else if (gamepad1.b)
             robot.getArm().fold();
         else if (gamepad1.a)
             robot.getArm().deposit();
-        else if (gamepad1.x)
+        else if (gamepad1.x || gamepad2.x)
             robot.getArm().stop();
-        else if (gamepad1.left_bumper)
+        else if (gamepad1.left_bumper) {
+            robot.getArm().pick();
             robot.getClaw().grab();
-        else if (gamepad1.right_bumper)
+        }
+        else if (gamepad1.right_bumper) {
             robot.getClaw().release();
+            // if we're in a pickup state, move back to pre-pickup state
+            if(robot.getArm().is_in_pick_state())
+                robot.getArm().pre_pick();
+        }
 
         /* Using the D-Pad to do fine controls to help with pickup*/
         // check for fine angle controls (using the d-keys on the left of the game-pad)
@@ -106,6 +123,7 @@ public class RobotTeleOpMode extends OpMode {
             robot.getDroneLauncher().launch();
         }
 
+        /* #---------------------- Object Detection ----------------------# */
         //detect pixel
         double conf=objdet.telemetryTfod(telemetry);
 

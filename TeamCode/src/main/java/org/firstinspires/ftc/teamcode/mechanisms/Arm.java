@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 public class Arm {
     private DcMotor motorArm;
     private TouchSensor initCheckSensor;
+    private int initOK=0;
 
     private final double gearRatio = 5.0;
     private final double  PPR = 1425.1 * gearRatio; //pulse per revolution for motor encoder
@@ -14,15 +15,17 @@ public class Arm {
 
     // preset angles (in degrees)
     private final int FoldAngle=7;
-    private final int PickAngle=219;
+    private final int PickAngle=220;
+    private final int PrePickAngle = PickAngle - 2;
     private final int DepositAngle=(219-65);
 
-    private final double ArmMotorPwrDefault = 0.4;
+    private final double ArmMotorPwrDefault = 0.9;
 
     public enum ArmStateType {
         INIT_OK,
         INIT_NOT_GOOD,
         FOLD,
+        PRE_PICK,
         PICK,
         DEPOSIT,
         FINE_ADJ,
@@ -34,7 +37,8 @@ public class Arm {
 
     public Arm(HardwareMap hardwareMap) {
         motorArm = hardwareMap.get(DcMotor.class, "motor-arm");
-        // add a magnetic limit switch (https://docs.revrobotics.com/magnetic-limit-switch/) to make sure the arm is in correct position
+
+        //  magnetic limit switch (https://docs.revrobotics.com/magnetic-limit-switch/) to make sure the arm is in correct init  position
         initCheckSensor = hardwareMap.get(TouchSensor.class,"arm-init-check-switch");
 
         // Reverse direction of motor if the arm is flipped manually
@@ -44,23 +48,21 @@ public class Arm {
         // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
         motorArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // check that the arm is in the correct initial state
         if (initCheckSensor.isPressed()) {
             armState = ArmStateType.INIT_OK;
+            initOK=1;
         }
-        else
+        else {
             armState = ArmStateType.INIT_NOT_GOOD; // arm NOT in correct position
+            initOK=0;
+        }
     }
 
     // check if the arm was initialized fine
     public int arm_init_ok () {
-        return (armState == ArmStateType.INIT_OK?1:0);
+        return initOK;
     }
-
-    public int check_limit_state () {
-        if (initCheckSensor.isPressed()) return 1;
-        else return 0;
-    }
-
 
     //helper function to translate from angle to position
     private int ang_to_pos(double angle) {
@@ -104,7 +106,21 @@ public class Arm {
         if (armState == ArmStateType.DEPOSIT)
             return;
 
+        // we can only go from pre-pick to pick
+        if (armState != ArmStateType.PRE_PICK)
+            return;
+
         armState = ArmStateType.PICK;
+        set_arm_pos(targetPosition);
+    }
+    public void pre_pick () {
+        int targetPosition = ang_to_pos(PrePickAngle);
+
+        //  safety code to prevent going from DEPOSIT to PICK
+        if (armState == ArmStateType.DEPOSIT)
+            return;
+
+        armState = ArmStateType.PRE_PICK;
         set_arm_pos(targetPosition);
     }
 
@@ -139,6 +155,12 @@ public class Arm {
             set_arm_pos_pwr(ang_to_pos(targetAngle), ArmMotorPwrDefault / 2);
             return (int) targetAngle;
         }
+    }
+    public boolean is_in_pick_state() {
+        return (armState==ArmStateType.PICK);
+    }
+    public boolean is_in_pre_pick_state() {
+        return (armState==ArmStateType.PRE_PICK);
     }
 
     public int getCurrentPosition() {
