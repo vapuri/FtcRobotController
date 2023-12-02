@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.Robot;
 @TeleOp
 public class RobotTeleOpMode extends OpMode {
     Robot robot;
-    String CompileDate= "11/22/2023";
-    String CompileTime= "10:41am";
+    String CompileDate= "12/01/2023";
+    String CompileTime= "05:21pm";
 
     long init_time_mills=0;
 
@@ -51,16 +51,16 @@ public class RobotTeleOpMode extends OpMode {
         // set overall power cap here on top!
         final int  DfltPwrCap = 1; // default
         final int  FinePwrCap = 3; // fine
-        final int  RotPwrCap  = 2; // cap rotation  power
+
 
         int  MidPwrCap  = (FinePwrCap+DfltPwrCap)/2; // intermediate
 
-        // set all the conditions for power cap
+        // set all the conditions for power cap (across every motor action)
         boolean PwrCapEn = robot.getArm().is_in_pre_pick_state() ||
                 robot.getArm().is_in_pick_state() ||
                 (gamepad1.right_trigger!=0);
 
-        ObjDetection objdet = robot.getObjDetector();
+        //ObjDetection objdet = robot.getObjDetector();
 
         // cut power to drive-train if right_trigger is pressed
         if (PwrCapEn)
@@ -69,7 +69,13 @@ public class RobotTeleOpMode extends OpMode {
             robot.getDrivetrain().setPowerCap(DfltPwrCap);
 
         //monitor drive-train controls (i.e., mecanum wheel movement)
-        robot.getDrivetrain().drive(forward, right, rotate/RotPwrCap);
+
+        // power cap specific vectors
+        int forward_scaling   = robot.getArm().is_in_deposit_state()? 2:1; // scale fwd motion when  arm in 'deposit' state (i.e., variable speed)
+        int right_scaling     = 1;  // no scaling for strafing    (i.e., always full-speed)
+        int rotate_scaling    = 2;  // fixed scaling for rotation (i.e., always half-speed)
+
+        robot.getDrivetrain().drive(forward/forward_scaling, right/right_scaling, rotate/rotate_scaling);
 
         // monitor game-pad inputs for the arm & claw
         if (gamepad1.y) {
@@ -83,10 +89,12 @@ public class RobotTeleOpMode extends OpMode {
             robot.getArm().fold();
         else if (gamepad1.a)
             robot.getArm().deposit();
-        else if (gamepad1.x || gamepad2.x)
+        else if (gamepad1.x || gamepad2.x) //Note: gamepad2 is also used here.
             robot.getArm().stop();
         else if (gamepad1.left_bumper) {
-            robot.getArm().pick();
+            // if in pre-pick staete, move to pick state first
+            if(robot.getArm().is_in_pre_pick_state())
+                robot.getArm().pick();
             robot.getClaw().grab();
         }
         else if (gamepad1.right_bumper) {
@@ -98,10 +106,14 @@ public class RobotTeleOpMode extends OpMode {
 
         /* Using the D-Pad to do fine controls to help with pickup*/
         // check for fine angle controls (using the d-keys on the left of the game-pad)
-        if (gamepad1.dpad_up) // fine control of arm: downwards
-            robot.getArm().fine_clk();
-        if (gamepad1.dpad_down) // fine control of arm: downwards
-            robot.getArm().fine_anti_clk();
+        if (gamepad1.dpad_up) {// fine control of arm: downwards
+            int angle=robot.getArm().fine_clk();
+            //telemetry.addLine("Fine Angle=" + angle);
+        }
+        if (gamepad1.dpad_down) { // fine control of arm: downwards
+            int angle=robot.getArm().fine_anti_clk();
+            //telemetry.addLine("Fine Angle=" + angle);
+        }
         if (gamepad1.dpad_left) { // fine control of robot: left
             robot.getDrivetrain().setPowerCap(MidPwrCap);
             robot.getDrivetrain().drive(0/*forward*/, -1/*right*/, 0/*rotate*/);
@@ -114,34 +126,33 @@ public class RobotTeleOpMode extends OpMode {
         /* #---------------------- GAMEPAD2 ----------------------# */
         // drone preparation (combination keys) - Gamepad2 (X + Y)
         if (gamepad2.x && gamepad2.y) {
-            telemetry.speak("WARNING! Preparing Drone!");
+            //telemetry.speak("WARNING! Preparing Drone!");
             robot.getDroneLauncher().prepare();
         }
         // drone launcher (combination keys) - Gamepad2 (A + B)
         if (gamepad2.a && gamepad2.b) {
-            telemetry.speak("Launching Drone!");
+            //telemetry.speak("Launching Drone!");
             robot.getDroneLauncher().launch();
         }
 
-        /* #---------------------- Object Detection ----------------------# */
-        //detect pixel
-        double conf=objdet.telemetryTfod(telemetry);
-
-        if (gamepad2.start)
-            robot.set_pixel_seek(1);
-
-        if (gamepad2.back)
-            robot.set_pixel_seek(0);
-
-        if (robot.pixel_seek()==1 && conf < 80.0) {
-            telemetry.addData("FINE!", "(%.0f %% Conf.)",conf);
-            double u_forward = -gamepad2.left_stick_y;
-            double u_right   = gamepad2.left_stick_x;
-            double u_rotate  = gamepad2.right_stick_x;
-            robot.getDrivetrain().setPowerCap(5);
-            robot.getDrivetrain().drive(u_forward, u_right, u_rotate);
-        }
-
+//        /* #---------------------- Object Detection ----------------------# */
+//        //detect pixel
+//        double conf=objdet.telemetryTfod(telemetry);
+//
+//        if (gamepad2.start)
+//            robot.set_pixel_seek(1);
+//
+//        if (gamepad2.back)
+//            robot.set_pixel_seek(0);
+//
+//        if (robot.pixel_seek()==1 && conf < 80.0) {
+//            telemetry.addData("FINE!", "(%.0f %% Conf.)",conf);
+//            double u_forward = -gamepad2.left_stick_y;
+//            double u_right   = gamepad2.left_stick_x;
+//            double u_rotate  = gamepad2.right_stick_x;
+//            robot.getDrivetrain().setPowerCap(5);
+//            robot.getDrivetrain().drive(u_forward, u_right, u_rotate);
+//        }
 //        if (gamepad2.back) {
 //            telemetry.speak("deleting ObjDet");
 //            objdet.delobj();

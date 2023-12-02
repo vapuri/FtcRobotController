@@ -14,8 +14,8 @@ public class Arm {
     private ArmStateType armState;
 
     // preset angles (in degrees)
-    private final int FoldAngle=7;
-    private final int PickAngle=220;
+    private final int FoldAngle=5;
+    private final int PickAngle=224;
     private final int PrePickAngle = PickAngle - 2;
     private final int DepositAngle=(219-65);
 
@@ -161,6 +161,10 @@ public class Arm {
     }
     public boolean is_in_pre_pick_state() {
         return (armState==ArmStateType.PRE_PICK);
+    }
+
+    public boolean is_in_deposit_state() {
+        return (armState==ArmStateType.DEPOSIT);
     }
 
     public int getCurrentPosition() {

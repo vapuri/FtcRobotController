@@ -19,7 +19,7 @@ public class Robot {
         claw = new Claw(hardwareMap);
         //eyes = new Eyes(hardwareMap);
         drone = new DroneLauncher(hardwareMap);
-        objdet = new ObjDetection(hardwareMap);
+        //objdet = new ObjDetection(hardwareMap);
 
         pixel_seek=0;
     }

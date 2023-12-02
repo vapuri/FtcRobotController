@@ -21,7 +21,7 @@ public class Claw {
     }
 
     public void release() {
-        clawServo.setPosition(0.3);
+        clawServo.setPosition(0.4);
         clawState = ClawStateType.CLAW_OPEN;
     }
 
